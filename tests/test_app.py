@@ -338,6 +338,18 @@ async def test_app_session(session_app: Quart) -> None:
     session_app.session_interface.save_session.assert_called()  # type: ignore
 
 
+async def test_app_session_not_accessed_by_process_response() -> None:
+    app = Quart(__name__)
+    app.secret_key = "secret"
+
+    @app.get("/")
+    async def index() -> str:
+        return ""
+
+    response = await app.test_client().get("/")
+    assert response.headers.get("Vary") is None
+
+
 async def test_app_session_websocket(session_app: Quart) -> None:
     test_client = session_app.test_client()
     async with test_client.websocket("/ws/") as test_websocket:
