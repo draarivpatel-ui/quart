@@ -1690,10 +1690,9 @@ class Quart(App):
                     ResponseTypes, await self.ensure_async(function)(response)
                 )
 
-        session_ = ctx.session
-        if not self.session_interface.is_null_session(session_):
+        if not self.session_interface.is_null_session(ctx._session):
             await self.ensure_async(self.session_interface.save_session)(
-                self, session_, response
+                self, ctx._session, response
             )
         return response
 
@@ -1720,9 +1719,8 @@ class Quart(App):
                     ResponseTypes, await self.ensure_async(function)(response)
                 )
 
-        session_ = ctx.session
-        if not self.session_interface.is_null_session(session_):
-            await self.session_interface.save_session(self, session_, response)
+        if not self.session_interface.is_null_session(ctx._session):
+            await self.session_interface.save_session(self, ctx._session, response)
         return response
 
     async def __call__(
